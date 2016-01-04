@@ -4,5 +4,6 @@
     "cleanArchiveBeforeDeploy" : false,
     "enableGZIP": false,
     "enableRevisioning": true,
+    "enableBower" : true,
     "transformForAngular": true
 }

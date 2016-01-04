@@ -1,7 +1,7 @@
 require('es6-promise').polyfill();
 
 var confGlobal = require('./config/gulp-global.json');
-var confFileMap = require('./config/gulp-filemap.json');
+var confFileMap = require('./config/gulp-filemappings.json');
 var confPlugins = require('./config/gulp-plugins.json');
 var confLocal = require('./config/gulp-local.json');
 
@@ -16,6 +16,8 @@ var gulpif = require('gulp-if');
 var del = require('del');
 var browserSync = require("browser-sync").create();
 var reload = browserSync.reload;
+
+var mainBowerFiles = require('main-bower-files');
 
 // Monitor cleaning process
 var isCleanedDev = false;
@@ -37,27 +39,27 @@ gulp.task('default', function() {
 
 gulp.task('dev', function() {
   confGlobal.isDevelop = true;
-  runSequence('clean:dev', ['js', 'css', 'html', 'img'], ['serve', 'watch']);
+  runSequence('clean:dev', 'bower', ['js', 'css', 'html', 'img'], ['serve', 'watch']);
 });
 
 gulp.task('dev:nowatch', function() {
   confGlobal.isDevelop = true;
-  runSequence('clean:dev', ['js', 'css', 'html', 'img']);
+  runSequence('clean:dev', 'bower', ['js', 'css', 'html', 'img']);
 });
 
 gulp.task('prod', function() {
   confGlobal.isDevelop = false;
-  runSequence('clean:prod', ['js', 'css', 'html', 'img'], 'usemin', 'rev', ['serve', 'watch']);
+  runSequence('clean:prod', 'bower', ['js', 'css', 'html', 'img'], 'usemin', 'rev', ['serve', 'watch']);
 });
 
 gulp.task('prod:nowatch', function() {
   confGlobal.isDevelop = false;
-  runSequence('clean:prod', ['js', 'css', 'html', 'img'], 'usemin', 'rev');
+  runSequence('clean:prod', 'bower', ['js', 'css', 'html', 'img'], 'usemin', 'rev');
 });
 
 gulp.task('prod:deploy', function() {
   confGlobal.isDevelop = false;
-  runSequence(['clean:prod', 'clean:zip'], ['js', 'css', 'html', 'img'], 'usemin', 'rev', 'zip');
+  runSequence(['clean:prod', 'clean:zip'], 'bower', ['js', 'css', 'html', 'img'], 'usemin', 'rev', 'zip');
 });
 
 gulp.task('prod:test', function() {
@@ -71,6 +73,41 @@ gulp.task('clean:all', function() {
 /*
 Tasks by type
 */
+gulp.task('bower', function() {
+
+  if (confGlobal.enableBower) {
+
+    var bower_path = './bower_components/';
+
+    // Fontawesome specific: deploys fonts to environments
+    gulp.src(bower_path + '/font-awesome/fonts/*.{otf,eot,svg,ttf,woff,woff2}')
+      .pipe(gulp.dest(confFileMap.env.dev.dest + '/fonts/'))
+      .pipe(gulp.dest(confFileMap.env.prod.dest + '/fonts/'));
+
+    // Get external js files
+    gulp.src(mainBowerFiles())
+      .pipe(plugins.filter('**/*.js'))
+      .pipe(plugins.concat('bower.js'))
+      .pipe(gulp.dest(confFileMap.env.dev.base + confFileMap.targetFolders.js));
+
+    // Get scss files
+    gulp.src(mainBowerFiles())
+      .pipe(plugins.filter('**/*.s+(a|c)ss'))
+      .pipe(plugins.sass())
+      .pipe(plugins.concat('bower-processed.css'))
+      .pipe(gulp.dest(confFileMap.env.dev.base + confFileMap.targetFolders.css));
+
+    // Get css files
+    gulp.src(mainBowerFiles())
+      .pipe(plugins.filter('**/*.css'))
+      .pipe(plugins.concat('bower.css'))
+      .pipe(gulp.dest(confFileMap.env.dev.base + confFileMap.targetFolders.css));
+
+    return notify('Bower files processed', 'success');
+  }
+
+});
+
 gulp.task('js', function() {
 
   var path = confFileMap.env.dev;
@@ -315,7 +352,6 @@ gulp.task('revision:cleanBeforeRun', function() {
   }
 
 });
-
 
 /* **************************************************
  *  Tests                                            *

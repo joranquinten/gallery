@@ -11,17 +11,17 @@
   },
   "sourceFiles": {
     "jsCritical": [
-      "angular/vendor/modernizr.js"
+      "scripts/vendor/modernizr.js"
     ],
     "js": [
-      "angular/**/*.js",
-      "!angular/vendor/modernizr.js"
+      "scripts/**/*.js",
+      "!scripts/vendor/modernizr.js"
     ],
     "scss": [
       "scss/styles.s+(a|c)ss"
     ],
     "css": [
-      "angular/**/*.css"
+      "styles/**/*.css"
     ],
     "html": [
       "index.html"
@@ -38,8 +38,8 @@
     "zip": ["./production/**/*", "!./production/tests/"]
   },
   "targetFolders": {
-    "js": "angular/",
-    "css": "angular/",
+    "js": "scripts/",
+    "css": "styles/",
     "html": "/",
     "images": "img/",
     "maps": "./",
@@ -54,8 +54,8 @@
   },
   "watchFiles": {
     "scss": "scss/**/*.s+(a|c)ss",
-    "css": "angular/*.css",
-    "js": "angular/**/*.js",
+    "css": "styles/*.css",
+    "js": "scripts/**/*.js",
     "html": "*.{html,htm,xml,txt}",
     "images": "img/**/*.{gif,png,jpeg,jpg,svg}"
   }
