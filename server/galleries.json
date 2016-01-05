@@ -1,0 +1,17 @@
+{
+  "meta" : {},
+	"albums": [{
+			"title": "Test 1",
+			"added": "Thu, 21 Dec 2000 16:01:07 +0200",
+			"description": "Dit is een test",
+			"items": 14,
+			"tags": "test, tag, cat"
+		}, {
+			"title": "Test 2",
+			"added": "Thu, 21 Dec 2000 16:01:07 +0200",
+			"description": "Dit is ook een test",
+			"items": 9,
+			"tags": "tag, gallery"
+		}
+	]
+}
