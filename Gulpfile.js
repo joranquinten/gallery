@@ -372,6 +372,21 @@ gulp.task('unit', function(done) {
 
 });
 
+gulp.task('unit:jenkins', function() {
+
+ notify('Starting unit tests.', 'title');
+
+ var path = confFileMap.env.dev;
+ var base = path.base,
+   ref = confFileMap.sourceFiles.tests.unit;
+
+ new karmaServer({
+   confGlobalFile: __dirname + confPlugins.karma.configFile,
+   singleRun: true
+ });
+
+});
+
 gulp.task('e2e', function() {
 
   var path = confFileMap.env.dev;
